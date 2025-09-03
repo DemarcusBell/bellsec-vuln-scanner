@@ -56,3 +56,8 @@ git commit -m "Initial BellSec release: HTML/JSON reports, NVD→CIRCL fallback,
 # set main as default branch
 git branch -M main
 gh repo create bellsec-vuln-scanner --public --source=. --remote=origin --push
+
+## Demo
+- **HTML preview**: https://htmlpreview.github.io/?https://raw.githubusercontent.com/DemarcusBell/bellsec-vuln-scanner/main/examples/report_localhost.html
+- **PDF (download)**: https://raw.githubusercontent.com/DemarcusBell/bellsec-vuln-scanner/main/examples/report_localhost.pdf
+- **JSON**: https://raw.githubusercontent.com/DemarcusBell/bellsec-vuln-scanner/main/examples/sample_localhost.json
