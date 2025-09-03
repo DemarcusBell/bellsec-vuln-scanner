@@ -1,0 +1,11 @@
+{
+  "target": "127.0.0.1",
+  "results": [
+    {
+      "host": "127.0.0.1",
+      "hostname": "localhost",
+      "state": "up",
+      "services": []
+    }
+  ]
+}
