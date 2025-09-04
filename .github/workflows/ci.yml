@@ -1,12 +1,39 @@
 name: CI
 on: [push, pull_request]
+
 jobs:
   smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install system deps (nmap)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nmap
+
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Smoke test CLI
+        run: |
+          python vuln_scanner.py --help
+
+  import_only:   # ultra-fast sanity check that won't ever try to run nmap
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - run: sudo apt-get update && sudo apt-get install -y nmap
-      - run: python3 vuln_scanner.py --help
+          cache: 'pip'
+      - run: |
+          pip install -r requirements.txt
+          python -c "import nmap; print('import ok')"
