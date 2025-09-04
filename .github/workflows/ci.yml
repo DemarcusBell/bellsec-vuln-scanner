@@ -1,8 +1,4 @@
-# from repo root
-sed -n '1,200p' .github/workflows/ci.yml | nl | sed -n '1,200p' >/dev/null  # (no-op preview)
 
-# open the file to edit
-nano .github/workflows/ci.yml
 name: CI
 
 on:
