@@ -1,13 +1,25 @@
 name: CI
-on: [push, pull_request]
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:   # lets you run it manually from the Actions tab
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   smoke:
+    name: Smoke (nmap + CLI)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -22,18 +34,36 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Smoke test CLI
-        run: |
-          python vuln_scanner.py --help
+      - name: Smoke test
+        run: python vuln_scanner.py --help
 
-  import_only:   # ultra-fast sanity check that won't ever try to run nmap
+      - name: Produce tiny artifact (proof)
+        run: echo "<html><body><h3>CI sample</h3></body></html>" > report_ci_sample.html
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bellsec-ci-sample
+          path: report_ci_sample.html
+
+  import_only:
+    name: Import-only (no nmap)
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
-      - run: |
+
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
-          python -c "import nmap; print('import ok')"
+
+      - name: Import module
+        run: python -c "import nmap; print('import ok')"
