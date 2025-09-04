@@ -1,3 +1,8 @@
+# from repo root
+sed -n '1,200p' .github/workflows/ci.yml | nl | sed -n '1,200p' >/dev/null  # (no-op preview)
+
+# open the file to edit
+nano .github/workflows/ci.yml
 name: CI
 
 on:
@@ -34,8 +39,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Smoke test
-        run: python vuln_scanner.py --help
+      - name: Smoke test (fast localhost)
+  run: python vuln_scanner.py 127.0.0.1 --top-ports 1 --title "CI smoke"
+
 
       - name: Produce tiny artifact (proof)
         run: echo "<html><body><h3>CI sample</h3></body></html>" > report_ci_sample.html
